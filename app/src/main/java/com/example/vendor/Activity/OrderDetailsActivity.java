@@ -95,7 +95,7 @@ public class OrderDetailsActivity extends AppCompatActivity {
                             accesstoken=accessToken;
                             System.out.println("token "+accessToken);
                             sendFCMNotification(getApplicationContext(),customer_token,title,body,accesstoken);
-                            sendRider(getApplicationContext,accesstoken);
+                            sendRider(getApplicationContext(),accesstoken);
                         } else {
                             // Handle error condition
                         }
