@@ -48,6 +48,7 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.ViewHolder>{
                 intent.putExtra("address",order.getAddress());
                 intent.putExtra("payment",order.getPayment_type());
                 intent.putExtra("total_price",order.getTotal_price());
+                intent.putExtra("customer_token",order.getCustomer_token());
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
                 context.startActivity(intent);
             }

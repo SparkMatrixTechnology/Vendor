@@ -3,9 +3,11 @@ package com.example.vendor.Model;
 public class User {
     int vendor_id;
     String vendor_name,vendor_password,shop_image,shop_category,area,address;
-    int delivery_time,rating,vendor_status;
+    int delivery_time,vendor_status;
 
-    public User(int vendor_id, String vendor_name, String vendor_password, String shop_image, String shop_category, String area, String address, int delivery_time, int rating, int vendor_status) {
+    String vendor_token;
+
+    public User(int vendor_id, String vendor_name, String vendor_password, String shop_image, String shop_category, String area, String address, int delivery_time, int vendor_status, String vendor_token) {
         this.vendor_id = vendor_id;
         this.vendor_name = vendor_name;
         this.vendor_password = vendor_password;
@@ -14,8 +16,9 @@ public class User {
         this.area = area;
         this.address = address;
         this.delivery_time = delivery_time;
-        this.rating = rating;
+
         this.vendor_status = vendor_status;
+        this.vendor_token = vendor_token;
     }
 
     public int getVendor_id() {
@@ -82,19 +85,19 @@ public class User {
         this.delivery_time = delivery_time;
     }
 
-    public int getRating() {
-        return rating;
-    }
-
-    public void setRating(int rating) {
-        this.rating = rating;
-    }
-
     public int getVendor_status() {
         return vendor_status;
     }
 
     public void setVendor_status(int vendor_status) {
         this.vendor_status = vendor_status;
+    }
+
+    public String getVendor_token() {
+        return vendor_token;
+    }
+
+    public void setVendor_token(String vendor_token) {
+        this.vendor_token = vendor_token;
     }
 }

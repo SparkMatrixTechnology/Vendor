@@ -77,12 +77,18 @@ public class OrderActivity extends AppCompatActivity {
                                     object.getInt("customer_id"),
                                     object.getInt("vendor_id"),
                                     object.getString("address"),
+                                    object.getInt("cost"),
+                                    object.getInt("delivery_fee"),
                                     object.getInt("total_price"),
                                     object.getString("comment"),
                                     object.getString("payment_type"),
                                     object.getString("payment_status"),
                                     object.getString("order_status"),
-                                    object.getString("order_date")
+                                    object.getString("order_date"),
+                                    object.getInt("rider_id"),
+                                    object.getString("customer_name"),
+                                    object.getString("customer_phone"),
+                                    object.getString("customer_token")
                             );
                             orderModels.add(order);
                         }

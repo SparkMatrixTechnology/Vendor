@@ -1,15 +1,12 @@
 package com.example.vendor;
 
-import android.app.Notification;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
+import static android.content.ContentValues.TAG;
+
+
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.os.Build;
+
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.widget.Button;
@@ -17,14 +14,28 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.example.vendor.Activity.LoginActivity;
 import com.example.vendor.Activity.WelcomeActivity;
+
+import com.example.vendor.Model.User;
 import com.example.vendor.session.SharedPrefManager;
-import com.google.android.material.snackbar.Snackbar;
+import com.example.vendor.utils.Constants;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+
 import com.google.android.material.navigation.NavigationView;
 
-import androidx.core.content.res.ResourcesCompat;
+import android.support.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -33,6 +44,15 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.vendor.databinding.ActivityMainBinding;
+import com.google.firebase.messaging.FirebaseMessaging;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -44,6 +64,10 @@ public class MainActivity extends AppCompatActivity {
     Button logout;
     ImageView profile_image;
     TextView profile_name;
+    int vendor_id;
+    String token;
+    String vendor_name,vendor_password,shop_image,shop_category,area,address,vendor_token;
+    int delivery_time,vendor_status;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,39 +76,7 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         sharedPrefManager=new SharedPrefManager(getApplicationContext());
-
         setSupportActionBar(binding.appBarMain.toolbar);
-///Notification
-
-        Drawable drawable= ResourcesCompat.getDrawable(getResources(),R.drawable.notification_logo,null);
-        BitmapDrawable bitmapDrawable= (BitmapDrawable) drawable;
-
-        Bitmap largeIcon=bitmapDrawable.getBitmap();
-
-        NotificationManager notificationManager= (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        Notification notification;
-        //PendingIntent pendingIntent=PendingIntent.getActivity(this,10,)
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                notification= new Notification.Builder(this)
-                        .setLargeIcon(largeIcon)
-                        .setSmallIcon(R.drawable.notification_logo)
-                        .setContentText("New Notification")
-                        .setSubText("New Message from Server")
-                       // .setContentIntent()
-                        .setChannelId(CHANNEL_ID)
-                        .build();
-                notificationManager.createNotificationChannel(new NotificationChannel(CHANNEL_ID,"NEW channel",NotificationManager.IMPORTANCE_HIGH));
-            }else {
-               notification= new Notification.Builder(this)
-                        .setLargeIcon(largeIcon)
-                        .setSmallIcon(R.drawable.notification_logo)
-                        .setContentText("New Notification")
-                        .setSubText("New Message from Server")
-                        .build();
-            }
-            notificationManager.notify(NOTIFICATION_ID,notification);
-
 
 
 
@@ -110,8 +102,6 @@ public class MainActivity extends AppCompatActivity {
         String image= sharedPrefManager.getUser().getShop_image();
         profile_name.setText(name);
         Glide.with(this).load(image).into(profile_image);
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.nav_home, R.id.nav_product, R.id.nav_slideshow,R.id.nav_help)
                 .setOpenableLayout(drawer)
@@ -141,5 +131,73 @@ public class MainActivity extends AppCompatActivity {
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
         }
+        else {
+            //device id
+            FirebaseMessaging.getInstance().getToken()
+                    .addOnCompleteListener(new OnCompleteListener<String>() {
+                        @Override
+                        public void onComplete(@NonNull Task<String> task) {
+                            if (!task.isSuccessful()) {
+                                Log.w(TAG, "Fetching FCM registration token failed", task.getException());
+                                return;
+                            }
+                            // Get new FCM registration token
+                            token = task.getResult();
+
+                            updateVendorToken(token);
+                            System.out.println("token"+token);
+                            Log.d(TAG, token);
+                        }
+                    });
+        }
+    }
+    public void updateVendorToken(String token) {
+
+        StringRequest request=new StringRequest(Request.Method.POST,Constants.UPDATE_USER_TOKEN_URL+sharedPrefManager.getUser().getVendor_id() , new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                try {
+                    Log.e("err",response);
+                    JSONObject mainObj = new JSONObject(response);
+                    if(mainObj.getString("status").equals("success")){
+                        JSONArray jsonArray = mainObj.getJSONArray("user");
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            JSONObject users = jsonArray.getJSONObject(i);
+                            vendor_id = users.getInt("vendor_id");
+                            vendor_name = users.getString("vendor_name");
+                            vendor_password = users.getString("vendor_password");
+                            shop_image= Constants.IMAGE_URL + users.getString("shop_image");
+                            shop_category = users.getString("shop_category");
+                            area = users.getString("area");
+                            address = users.getString("address");
+                            delivery_time = users.getInt("delivery_time");
+                            vendor_status = users.getInt("vendor_status");
+                            vendor_token=users.getString("vendor_token");
+                            sharedPrefManager.saveUser(new User(vendor_id, vendor_name,vendor_password,shop_image,shop_category,area,address,delivery_time,vendor_status,vendor_token));
+                        }
+                    }
+
+                } catch (JSONException e) {
+                    throw new RuntimeException(e);
+                }
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(MainActivity.this,error.getMessage().toString(),Toast.LENGTH_SHORT).show();
+            }
+        }
+        ){
+            @Nullable
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String,String> params=new HashMap<String, String>();
+                params.put("vendor_token",token);
+                return params;
+            }
+        };
+        RequestQueue requestQueue= Volley.newRequestQueue(MainActivity.this);
+        requestQueue.add(request);
     }
 }

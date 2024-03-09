@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "351484392321",
+    "project_id": "campus-rider-d1c27",
+    "storage_bucket": "campus-rider-d1c27.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:351484392321:android:a99419332d65536d5bee80",
+        "android_client_info": {
+          "package_name": "com.example.campusrider"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDtEeXnVYl39PJHIYqk_oH9NSPEcCE64gk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:351484392321:android:1d51ebd59c701f5c5bee80",
+        "android_client_info": {
+          "package_name": "com.example.vendor"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDtEeXnVYl39PJHIYqk_oH9NSPEcCE64gk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

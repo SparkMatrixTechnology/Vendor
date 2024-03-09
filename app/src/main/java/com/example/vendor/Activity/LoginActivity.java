@@ -38,8 +38,8 @@ public class LoginActivity extends AppCompatActivity {
     Button login;
     EditText shop_name,shop_pass;
     int vendor_id;
-    String vendor_name,vendor_password,shop_image,shop_category,area,address;
-    int delivery_time,rating,vendor_status;
+    String vendor_name,vendor_password,shop_image,shop_category,area,address,vendor_token;
+    int delivery_time,vendor_status;
     String strname,strpassword;
     String url= Constants.LOGIN_URL;
     SharedPrefManager sharedPrefManager;
@@ -94,9 +94,8 @@ public class LoginActivity extends AppCompatActivity {
                                         area = users.getString("area");
                                         address = users.getString("address");
                                         delivery_time = users.getInt("delivery_time");
-                                        rating = users.getInt("rating");
                                         vendor_status = users.getInt("vendor_status");
-                                        sharedPrefManager.saveUser(new User(vendor_id, vendor_name,vendor_password,shop_image,shop_category,area,address,delivery_time,rating,vendor_status));
+                                        sharedPrefManager.saveUser(new User(vendor_id, vendor_name,vendor_password,shop_image,shop_category,area,address,delivery_time,vendor_status,vendor_token));
                                         Toast.makeText(LoginActivity.this, "Login Successful", Toast.LENGTH_SHORT).show();
 
                                         Intent intent = new Intent(LoginActivity.this, MainActivity.class);

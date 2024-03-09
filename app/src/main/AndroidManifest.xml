@@ -8,7 +8,9 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="com.google.android.c2dn.permission.Reciever"/>
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+
     <uses-permission
         android:name="android.permission.READ_EXTERNAL_STORAGE"
         android:maxSdkVersion="32" />
@@ -20,14 +22,26 @@
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:usesCleartextTraffic="true"
         android:networkSecurityConfig="@xml/network_security_config"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Vendor"
         tools:targetApi="31">
         <activity
+            android:name=".Activity.SplashActivity"
+            android:exported="true"
+            android:theme="@style/Theme.Vendor.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
             android:name=".Activity.WelcomeActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:theme="@style/Theme.Vendor.NoActionBar"/>
         <activity
             android:name=".Activity.OrderDetailsActivity"
             android:exported="false"
@@ -55,22 +69,31 @@
             android:theme="@style/Theme.Vendor.ActionBar" />
         <activity
             android:name=".Activity.LoginActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:theme="@style/Theme.Vendor.NoActionBar"/>
         <activity
             android:name=".Activity.RegistrationActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:theme="@style/Theme.Vendor.NoActionBar"/>
         <activity
             android:name=".MainActivity"
-            android:exported="true"
+            android:exported="false"
             android:label="@string/app_name"
             android:theme="@style/Theme.Vendor.NoActionBar"
             tools:ignore="RedundantLabel">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
+        <service
+            android:name=".Model.FirebaseMessegingService"
+            android:permission="com.google.android.c2dn.permission.Send"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+                <action android:name="com.google.android.c2dn.intent.Reciever" />
+            </intent-filter>
+        </service>
+        <service android:name=".Model.NotificationSoundService" />
+
 
         <meta-data
             android:name="preloaded_fonts"

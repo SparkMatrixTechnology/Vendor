@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="menu_home">ড্যাশবোর্ড</string>
+    <string name="select_category">প্রকার নির্বাচন করুন</string>
+    <string name="product">পণ্য</string>
+    <string name="cancelled_orders">বাতিল অর্ডার</string>
+    <string name="on_delivery">ডেলিভারিতে</string>
+    <string name="completed_order">সম্পূর্ণ অর্ডার</string>
+    <string name="accepted_order">গৃহীত আদেশ</string>
+    <string name="pending_orders">পেন্ডিং অর্ডার</string>
+
+    <string name="shop_name">দোকানের নাম</string>
+    <string name="sells_report">সেল এর রিপোর্ট</string>
+    <string name="help_center">সাহায্য কেন্দ্র</string>
+    <string name="langauge">বাংলা</string>
+</resources>

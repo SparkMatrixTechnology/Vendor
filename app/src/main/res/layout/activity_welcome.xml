@@ -20,7 +20,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="@font/open_sans_bold"
-        android:text="Campus Rider Bd"
+        android:text="Campus Rider Vendor"
         android:textAlignment="center"
         android:textColor="@color/white"
         android:textSize="33sp"

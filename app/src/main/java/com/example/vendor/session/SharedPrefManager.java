@@ -28,8 +28,7 @@ public class SharedPrefManager {
         editor.putString("area ",user.getArea());
         editor.putString("address",user.getAddress());
         editor.putInt("delivery_time",user.getDelivery_time());
-        editor.putInt("rating",user.getRating());
-        editor.putInt("rating",user.getRating());
+        editor.putString("vendor_token",user.getVendor_token());
         editor.putBoolean("logged",true);
         editor.apply();
     }
@@ -49,8 +48,8 @@ public class SharedPrefManager {
                 sharedPreferences.getString("area",null),
                 sharedPreferences.getString("address",null),
                 sharedPreferences.getInt("delivery_time",-1),
-                sharedPreferences.getInt("rating",-1),
-                sharedPreferences.getInt("vendor_status",-1)
+                sharedPreferences.getInt("vendor_status",-1),
+                sharedPreferences.getString("vendor_token",null)
                );
     }
     public void logout(){

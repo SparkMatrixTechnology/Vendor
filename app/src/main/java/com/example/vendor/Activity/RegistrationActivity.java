@@ -1,5 +1,7 @@
 package com.example.vendor.Activity;
 
+import static android.content.ContentValues.TAG;
+
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -8,6 +10,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
@@ -29,6 +32,9 @@ import com.android.volley.toolbox.Volley;
 import com.example.vendor.MainActivity;
 import com.example.vendor.R;
 import com.example.vendor.utils.Constants;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionDeniedResponse;
@@ -52,7 +58,7 @@ RegistrationActivity extends AppCompatActivity {
     Spinner spinnercategory,spinnerarea;
     Button add_image,register;
     ImageView profile_image;
-    String vendor_name,vendor_password,shop_image,shop_category,area,vendor_address;
+    String vendor_name,vendor_password,shop_category,area,vendor_address;
     Bitmap bitmap;
     ArrayList<String> categoryArray;
     ArrayAdapter<String> categoryAdapter;
@@ -63,6 +69,7 @@ RegistrationActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registration);
+
 
         store_name=findViewById(R.id.store_name_edit);
         password=findViewById(R.id.password_edit);
@@ -157,18 +164,16 @@ RegistrationActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode==111){
-            bitmap=(Bitmap) data.getExtras().get("data");
+        if(requestCode==111 && resultCode==RESULT_OK){
+            bitmap= (Bitmap)data.getExtras().get("data") ;
             profile_image.setImageBitmap(bitmap);
-            encodebitmap(bitmap);
         }
     }
-
-    private void encodebitmap(Bitmap bitmap) {
+    private String encodebitmap(Bitmap bitmap) {
         ByteArrayOutputStream byteArrayOutputStream=new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG,100,byteArrayOutputStream);
         byte[] byteofimages=byteArrayOutputStream.toByteArray();
-        shop_image=android.util.Base64.encodeToString(byteofimages, Base64.DEFAULT);
+        return Base64.encodeToString(byteofimages, Base64.DEFAULT);
     }
 
     public void getCategory(){
@@ -273,17 +278,10 @@ RegistrationActivity extends AppCompatActivity {
                 Map<String,String> params=new HashMap<String, String>();
                 params.put("vendor_name",vendor_name);
                 params.put("vendor_password",vendor_password);
-                params.put("shop_image",shop_image);
+                params.put("shop_image",encodebitmap(bitmap));
                 params.put("shop_category",shop_category);
                 params.put("area",area);
                 params.put("vendor_address",vendor_address);
-                Log.e("vendor_name", vendor_name);
-                Log.e("vendor_password", vendor_password);
-                Log.e("shop_image", shop_image);
-                Log.e("shop_category", shop_category);
-                Log.e("area", area);
-                Log.e("vendor_address", vendor_address);
-
                 return params;
             }
         };

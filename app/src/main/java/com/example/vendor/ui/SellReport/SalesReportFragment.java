@@ -12,6 +12,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -20,6 +22,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.vendor.Activity.OrderActivity;
+import com.example.vendor.Adapter.OrderAdapter;
 import com.example.vendor.Model.OrderModel;
 import com.example.vendor.Model.SalesReportModel;
 import com.example.vendor.databinding.FragmentSalesReportBinding;
@@ -30,6 +33,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.time.Year;
+import java.util.ArrayList;
 import java.util.Calendar;
 
 
@@ -37,6 +41,9 @@ public class SalesReportFragment extends Fragment {
     String from,to;
     SharedPrefManager sharedPrefManager;
     private FragmentSalesReportBinding binding;
+    ArrayList<OrderModel> orderModels;
+    OrderAdapter orderAdapter;
+    int tOrder=0,tIncome=0;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -59,15 +66,22 @@ public class SalesReportFragment extends Fragment {
                 openDialogue2();
             }
         });
+        orderModels=new ArrayList<>();
+        orderAdapter=new OrderAdapter(getActivity(),orderModels);
+        binding.orderRec.setAdapter(orderAdapter);
         binding.button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 getInfo(id);
+
             }
         });
-
-
+        binding.orderRec.setLayoutManager(new LinearLayoutManager(getActivity(), RecyclerView.VERTICAL,false));
+        binding.orderRec.setHasFixedSize(true);
+        binding.orderRec.setNestedScrollingEnabled(false);
         return root;
+
     }
 
     private void getInfo(int id) {
@@ -79,20 +93,40 @@ public class SalesReportFragment extends Fragment {
                     Log.e("err",response);
                     JSONObject mainObj = new JSONObject(response);
                     if(mainObj.getString("status").equals("success")){
-                        JSONArray order_array=mainObj.getJSONArray("Report");
+                        JSONArray order_array=mainObj.getJSONArray("Order_list");
                         for(int i=0;i<order_array.length();i++){
                             JSONObject object=order_array.getJSONObject(i);
-                            int total_order=object.getInt("torder");
-                            int total_cost=object.getInt("tcost");
-                            binding.textViewOrder.setText(""+total_order);
-                            binding.textViewSell.setText("TK "+total_cost);
+                            OrderModel orderModel=new OrderModel(
+                                    object.getInt("id"),
+                                    object.getInt("customer_id"),
+                                    object.getInt("vendor_id"),
+                                    object.getString("address"),
+                                    object.getInt("cost"),
+                                    object.getInt("delivery_fee"),
+                                    object.getInt("total_price"),
+                                    object.getString("comment"),
+                                    object.getString("payment_type"),
+                                    object.getString("payment_status"),
+                                    object.getString("order_status"),
+                                    object.getString("order_date"),
+                                    object.getInt("rider_id"),
+                                    object.getString("customer_name"),
+                                    object.getString("customer_phone"),
+                                    object.getString("customer_token")
+                            );
+                            int total_cost=object.getInt("delivery_fee");
+                            tOrder++;
+                            tIncome+=total_cost;
+                            orderModels.add(orderModel);
                         }
+                        orderAdapter.notifyDataSetChanged();
+                        binding.textViewOrder.setText(""+tOrder);
+                        binding.textViewSell.setText("TK "+tIncome);
                     }
                     if(mainObj.getString("status").equals("failed")) {
-                            binding.textViewOrder.setText(""+0);
-                            binding.textViewSell.setText("TK "+0);
+                        binding.textViewOrder.setText(""+0);
+                        binding.textViewSell.setText("TK "+0);
                     }
-
 
                 } catch (JSONException e) {
                     throw new RuntimeException(e);

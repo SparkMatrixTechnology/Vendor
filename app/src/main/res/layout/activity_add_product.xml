@@ -116,7 +116,7 @@
         android:layout_margin="0.5dp"
         android:layout_marginTop="52dp"
         android:scaleType="centerCrop"
-        android:src="@drawable/fav1"
+        android:src="@drawable/baseline_camera_alt_24"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.117"
