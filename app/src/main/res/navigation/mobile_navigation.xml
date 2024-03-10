@@ -7,24 +7,24 @@
 
     <fragment
         android:id="@+id/nav_home"
-        android:name="com.example.vendor.ui.home.HomeFragment"
+        android:name="com.campusrider.vendor.ui.home.HomeFragment"
         android:label="@string/menu_home"
         tools:layout="@layout/fragment_home" />
 
     <fragment
         android:id="@+id/nav_product"
-        android:name="com.example.vendor.ui.Product.ProductFragment"
+        android:name="com.campusrider.vendor.ui.Product.ProductFragment"
         android:label="@string/product"
         tools:layout="@layout/fragment_product" />
 
     <fragment
         android:id="@+id/nav_slideshow"
-        android:name="com.example.vendor.ui.SellReport.SalesReportFragment"
+        android:name="com.campusrider.vendor.ui.SellReport.SalesReportFragment"
         android:label="@string/sells_report"
         tools:layout="@layout/fragment_sales_report" />
     <fragment
         android:id="@+id/nav_help"
-        android:name="com.example.vendor.ui.help.HelpFragment"
+        android:name="com.campusrider.vendor.ui.help.HelpFragment"
         android:label="@string/help_center"
         tools:layout="@layout/fragment_help" />
 </navigation>

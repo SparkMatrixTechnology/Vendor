@@ -92,9 +92,6 @@
                 <action android:name="com.google.android.c2dn.intent.Reciever" />
             </intent-filter>
         </service>
-        <service android:name=".Model.NotificationSoundService" />
-
-
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />

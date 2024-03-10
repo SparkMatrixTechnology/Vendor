@@ -7,9 +7,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:351484392321:android:a99419332d65536d5bee80",
+        "mobilesdk_app_id": "1:351484392321:android:d1611c4099c64d0a5bee80",
         "android_client_info": {
-          "package_name": "com.example.campusrider"
+          "package_name": "com.campusrider.campusridercustomer"
         }
       },
       "oauth_client": [],
@@ -26,9 +26,28 @@
     },
     {
       "client_info": {
-        "mobilesdk_app_id": "1:351484392321:android:1d51ebd59c701f5c5bee80",
+        "mobilesdk_app_id": "1:351484392321:android:8bfb0feb9b0ec3035bee80",
         "android_client_info": {
-          "package_name": "com.example.vendor"
+          "package_name": "com.campusrider.vendor"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDtEeXnVYl39PJHIYqk_oH9NSPEcCE64gk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:351484392321:android:63bf9671901405d95bee80",
+        "android_client_info": {
+          "package_name": "com.campusrider_rider.campusrider"
         }
       },
       "oauth_client": [],
