@@ -19,4 +19,5 @@
     <color name="cancelled">#F50B0B</color>
     <color name="picked">#0A592D</color>
     <color name="delivered">#05FF05</color>
+    <color name="red">#800A0A</color>
 </resources>

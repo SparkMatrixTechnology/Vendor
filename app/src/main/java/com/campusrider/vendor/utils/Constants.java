@@ -13,4 +13,7 @@ public class Constants {
     public static String GET_ORDER_DETAILS_URL = API_BASE_URL + "order_details_by_status.php?order_id=";
     public static String UPDATE_FOOD_ORDER_URL = API_BASE_URL + "cangestatus.php?type=food&order_id=";
     public static String UPDATE_USER_TOKEN_URL = API_BASE_URL + "update_token.php?id=";
+
+    public static String POST_VARIATION_PRODUCTS_URL=API_BASE_URL+"addvariation.php";
+    public static String POST_VARIATION_Details_URL=API_BASE_URL+"addvariationdetails.php";
 }

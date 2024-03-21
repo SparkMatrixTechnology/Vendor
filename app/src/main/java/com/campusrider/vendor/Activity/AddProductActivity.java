@@ -11,8 +11,10 @@ import android.provider.MediaStore;
 import android.util.Base64;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,8 +34,13 @@ import com.karumi.dexter.listener.PermissionGrantedResponse;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.single.PermissionListener;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class AddProductActivity extends AppCompatActivity {
@@ -41,9 +48,10 @@ public class AddProductActivity extends AppCompatActivity {
     TextView cat;
     EditText productname,description,price;
     ImageView image;
-    Button add_image, add_product;
+    Button add_image, add_product,add_variation;
     String product_name,product_description,product_image,product_price;
     int cat_id,vendor_id;
+    LinearLayout variationlayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +66,15 @@ public class AddProductActivity extends AppCompatActivity {
         image=findViewById(R.id.profile_image);
         add_image=findViewById(R.id.add_image);
         add_product=findViewById(R.id.add);
+        add_variation=findViewById(R.id.addVariationButton);
+        variationlayout=findViewById(R.id.variation_layout);
+
+        add_variation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addView();
+            }
+        });
 
         cat_id=getIntent().getIntExtra("cat_id",0);
         vendor_id=getIntent().getIntExtra("vendor_id",0);
@@ -126,12 +143,22 @@ public class AddProductActivity extends AppCompatActivity {
                 if(response.equals("Product Already Exists!")){
                     Toast.makeText(AddProductActivity.this,"Product Exists",Toast.LENGTH_SHORT).show();
                 }
-                else {
-                    Toast.makeText(AddProductActivity.this,"Added",Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(AddProductActivity.this, ProductListActivity.class);
-                    intent.putExtra("id",cat_id);
-                    startActivity(intent);
+                try {
+                    JSONObject jsonObject= new JSONObject(response);
+                    String result=jsonObject.getString("status");
+                    if (result.equals("success")) {
+                        String product_id=jsonObject.getString("product_id");
+                        addVariation(product_id);
+                        Toast.makeText(AddProductActivity.this,"Added",Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(AddProductActivity.this, ProductListActivity.class);
+                        intent.putExtra("id",cat_id);
+                        startActivity(intent);
+                    }
+
+                } catch (JSONException e) {
+                    throw new RuntimeException(e);
                 }
+
 
 
             }
@@ -160,7 +187,149 @@ public class AddProductActivity extends AppCompatActivity {
         RequestQueue requestQueue= Volley.newRequestQueue(AddProductActivity.this);
         requestQueue.add(request);
 
-
-
     }
+    public void addVariation(String productId){
+        // Iterate through variation layouts
+        for (int i = 0; i < variationlayout.getChildCount(); i++) {
+            View variationView = variationlayout.getChildAt(i);
+            EditText editText = variationView.findViewById(R.id.variation_name);
+            CheckBox checkBox = variationView.findViewById(R.id.requiredCheckBox);
+            // Get the variation name
+            String variationName = editText.getText().toString();
+            String variationStatus;
+            if(checkBox.isChecked()){
+                variationStatus="Required";
+            }
+            else {
+                variationStatus="Optional";
+            }
+            StringRequest request=new StringRequest(Request.Method.POST, Constants.POST_VARIATION_PRODUCTS_URL, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    if(response.equals("Variation Already Exists!")){
+                        Toast.makeText(AddProductActivity.this,"Variation Exists",Toast.LENGTH_SHORT).show();
+                    }
+                    else {
+                        try {
+                            JSONObject jsonObject= new JSONObject(response);
+                            String result=jsonObject.getString("status");
+                            if (result.equals("success")) {
+                                String variation_id=jsonObject.getString("variation_id");
+                                addVariationDetails(variation_id,variationView);
+                                Toast.makeText(AddProductActivity.this,"Variation Added",Toast.LENGTH_SHORT).show();
+                            }
+                        } catch (JSONException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Toast.makeText(AddProductActivity.this,error.getMessage().toString(),Toast.LENGTH_SHORT).show();
+                }
+            }
+            ){
+
+                @Nullable
+                @Override
+                protected Map<String, String> getParams() throws AuthFailureError {
+                    Map<String,String> params=new HashMap<String, String>();
+                    params.put("product_id",productId);
+                    params.put("variation_name",variationName );
+                    params.put("status",variationStatus);
+
+                    return params;
+                }
+            };
+            RequestQueue requestQueue= Volley.newRequestQueue(AddProductActivity.this);
+            requestQueue.add(request);
+        }
+    }
+
+    private void addVariationDetails(String variationId,View variationView) {
+        // Iterate through description layouts
+        LinearLayout descriptionLayout = variationView.findViewById(R.id.descriptionlayout);
+        // Iterate through all description items
+        for (int j = 0; j < descriptionLayout.getChildCount(); j++) {
+            View descriptionView = descriptionLayout.getChildAt(j);
+            EditText description = descriptionView.findViewById(R.id.vdescription);
+            EditText price = descriptionView.findViewById(R.id.vprice);
+            // Get description and price
+            String descriptionText = description.getText().toString();
+            String priceText = price.getText().toString();
+            StringRequest request=new StringRequest(Request.Method.POST, Constants.POST_VARIATION_Details_URL, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    if(response.equals("Variation Description Already Exists!")){
+                        Toast.makeText(AddProductActivity.this,"Variation Details Exists",Toast.LENGTH_SHORT).show();
+                    }
+                    else {
+                        try {
+                            JSONObject jsonObject= new JSONObject(response);
+                            String result=jsonObject.getString("status");
+                            if (result.equals("success")) {
+                                Toast.makeText(AddProductActivity.this,"Variation Details Added",Toast.LENGTH_SHORT).show();
+                            }
+                        } catch (JSONException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Toast.makeText(AddProductActivity.this,error.getMessage().toString(),Toast.LENGTH_SHORT).show();
+                }
+            }
+            ){
+
+                @Nullable
+                @Override
+                protected Map<String, String> getParams() throws AuthFailureError {
+                    Map<String,String> params=new HashMap<String, String>();
+                    params.put("variation_id",variationId);
+                    params.put("description",descriptionText );
+                    params.put("price",priceText);
+
+                    return params;
+                }
+            };
+            RequestQueue requestQueue= Volley.newRequestQueue(AddProductActivity.this);
+            requestQueue.add(request);
+        }
+    }
+
+    private void addView() {
+        View variationview = getLayoutInflater().inflate(R.layout.add_variation, null, false);
+        EditText editText = variationview.findViewById(R.id.variation_name);
+        Button addvariationdetails, removevariation;
+        CheckBox checkBox = variationview.findViewById(R.id.requiredCheckBox);
+        LinearLayout descriptionlayout = variationview.findViewById(R.id.descriptionlayout);
+        addvariationdetails = variationview.findViewById(R.id.add_more);
+        removevariation = variationview.findViewById(R.id.remove_card);
+
+        addvariationdetails.setOnClickListener(v -> {
+            addView1(descriptionlayout); // Pass the description layout of the variation as a parameter
+        });
+
+        removevariation.setOnClickListener(v -> {
+            variationlayout.removeView(variationview);
+        });
+
+        variationlayout.addView(variationview);
+    }
+    private void addView1(LinearLayout descriptionlayout) {
+        View detailsview = getLayoutInflater().inflate(R.layout.add_variation_description, null, false);
+        EditText description = detailsview.findViewById(R.id.vdescription);
+        EditText price = detailsview.findViewById(R.id.vprice);
+        ImageView cross = detailsview.findViewById(R.id.remove_description);
+
+        cross.setOnClickListener(v -> {
+            descriptionlayout.removeView(detailsview);
+        });
+
+        descriptionlayout.addView(detailsview);
+    }
+
 }
