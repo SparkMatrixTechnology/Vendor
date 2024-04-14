@@ -4,6 +4,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.Manifest;
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -14,9 +16,12 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -28,6 +33,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.campusrider.vendor.R;
 import com.campusrider.vendor.utils.Constants;
+import com.hbb20.CountryCodePicker;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionDeniedResponse;
@@ -40,24 +46,27 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
+import java.time.Clock;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
 public class
 RegistrationActivity extends AppCompatActivity {
 
-    EditText store_name,password,address_edit;
+    EditText store_name,password,address_edit,ePhone,delivery_time;
     Spinner spinnercategory,spinnerarea;
+    TextView opening_time,closing_time;
     Button add_image,register;
     ImageView profile_image;
-    String vendor_name,vendor_password,shop_category,area,vendor_address;
+    String vendor_name,vendor_password,shop_category,area,vendor_address,deliveryTime,openingtime,closingtime;
     Bitmap bitmap;
     ArrayList<String> categoryArray;
     ArrayAdapter<String> categoryAdapter;
     ArrayList<String> areaArray;
     ArrayAdapter<String> areaAdapter;
-
+    CountryCodePicker countryCodePicker;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,7 +81,29 @@ RegistrationActivity extends AppCompatActivity {
         add_image=findViewById(R.id.add_image);
         register=findViewById(R.id.register);
         profile_image=findViewById(R.id.profile_image);
+        ePhone=findViewById(R.id.phone);
+        delivery_time=findViewById(R.id.deliverytime_edit);
+        opening_time=findViewById(R.id.openingTime);
+        closing_time=findViewById(R.id.closingTime);
+        countryCodePicker=findViewById(R.id.countryCodePicker);
+        countryCodePicker.registerCarrierNumberEditText(ePhone);
 
+        categoryArray=new ArrayList<>();
+        getCategory();
+        areaArray=new ArrayList<>();
+        getArea();
+        opening_time.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openDialogue1();
+            }
+        });
+        closing_time.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openDialogue2();
+            }
+        });
         add_image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -111,8 +142,7 @@ RegistrationActivity extends AppCompatActivity {
             }
         });
 
-        categoryArray=new ArrayList<>();
-        getCategory();
+
 
         spinnerarea.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -127,8 +157,7 @@ RegistrationActivity extends AppCompatActivity {
             }
         });
 
-        areaArray=new ArrayList<>();
-        getArea();
+
 
         register.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -144,6 +173,13 @@ RegistrationActivity extends AppCompatActivity {
                 if(address_edit.getText().toString().isEmpty()){
                     address_edit.setError("Field can't be empty");
                     return;
+                }
+                if(!countryCodePicker.isValidFullNumber()){
+                    ePhone.setError("Enter Valid Phone number");
+                    return;
+                }
+                if (delivery_time.getText().toString().isEmpty()){
+                    delivery_time.setError("Enter Valid Phone number");
                 }
                 else {
                     Register();
@@ -171,7 +207,7 @@ RegistrationActivity extends AppCompatActivity {
 
     public void getCategory(){
         RequestQueue queue=Volley.newRequestQueue(this);
-        StringRequest request =new StringRequest(Request.Method.POST, Constants.GET_FOOD_CATEGORIES_URL, new Response.Listener<String>() {
+        StringRequest request =new StringRequest(Request.Method.GET, Constants.GET_FOOD_CATEGORIES_URL, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 try {
@@ -205,7 +241,7 @@ RegistrationActivity extends AppCompatActivity {
     }
     public void getArea(){
         RequestQueue queue=Volley.newRequestQueue(this);
-        StringRequest request =new StringRequest(Request.Method.POST, Constants.GET_LOCATION_URL, new Response.Listener<String>() {
+        StringRequest request =new StringRequest(Request.Method.GET, Constants.GET_LOCATION_URL, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 try {
@@ -243,6 +279,8 @@ RegistrationActivity extends AppCompatActivity {
         vendor_name=store_name.getText().toString().trim();
         vendor_password=password.getText().toString().trim();
         vendor_address=address_edit.getText().toString().trim();
+        deliveryTime=delivery_time.getText().toString().trim();
+        
         StringRequest request=new StringRequest(Request.Method.POST, Constants.Registration_URL, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -252,8 +290,9 @@ RegistrationActivity extends AppCompatActivity {
                     startActivity(intent);
                 }else{
 
-                    Toast.makeText(RegistrationActivity.this,response,Toast.LENGTH_SHORT).show();
-                    Intent intent=new Intent(RegistrationActivity.this, LoginActivity.class);
+                    Toast.makeText(RegistrationActivity.this,"OTP sent Suceessfully",Toast.LENGTH_SHORT).show();
+                    Intent intent=new Intent(RegistrationActivity.this, OTPActivity.class);
+                    intent.putExtra("phone",countryCodePicker.getFullNumberWithPlus());
                     startActivity(intent);
                 }
 
@@ -261,7 +300,7 @@ RegistrationActivity extends AppCompatActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(RegistrationActivity.this,error.getMessage().toString(),Toast.LENGTH_SHORT).show();
+                Toast.makeText(RegistrationActivity.this,"Error",Toast.LENGTH_SHORT).show();
             }
         }
         ){
@@ -275,6 +314,10 @@ RegistrationActivity extends AppCompatActivity {
                 params.put("shop_category",shop_category);
                 params.put("area",area);
                 params.put("vendor_address",vendor_address);
+                params.put("delivery_time",deliveryTime);
+                params.put("opening_time",opening_time.getText().toString().trim());
+                params.put("closing_time",closing_time.getText().toString().trim());
+                params.put("vendor_phone",countryCodePicker.getFullNumberWithPlus());
                 return params;
             }
         };
@@ -283,6 +326,27 @@ RegistrationActivity extends AppCompatActivity {
 
 
 
+    }
+    public void openDialogue1(){
+        TimePickerDialog dialog=new TimePickerDialog(this, new TimePickerDialog.OnTimeSetListener() {
+            @Override
+            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                openingtime=String.valueOf(hourOfDay)+":"+String.valueOf(minute);
+                opening_time.setText(openingtime);
+            }
+        },11,00,false);
+        dialog.show();
+    }
+    public void openDialogue2(){
+
+        TimePickerDialog dialog=new TimePickerDialog(this, new TimePickerDialog.OnTimeSetListener() {
+            @Override
+            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                closingtime=String.valueOf(hourOfDay)+":"+String.valueOf(minute);
+                closing_time.setText(closingtime);
+            }
+        },11,00,false);
+        dialog.show();
     }
     public void log(View view){
         startActivity(new Intent(RegistrationActivity.this,LoginActivity.class));

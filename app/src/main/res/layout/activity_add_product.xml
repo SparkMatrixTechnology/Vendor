@@ -32,7 +32,10 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginBottom="5dp">
                 <TextView
                     android:id="@+id/cattext"
                     android:layout_width="wrap_content"
@@ -72,10 +75,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                android:backgroundTint="@color/black"
                 android:ems="10"
                 android:hint="Product Name"
                 android:layout_marginStart="20dp"
+                android:background="@drawable/edittext_bg"
+                android:padding="5dp"
                 android:layout_marginEnd="20dp"
                 android:layout_marginBottom="5dp"
                 android:inputType="text"
@@ -90,7 +94,8 @@
                 android:layout_marginTop="20dp"
                 android:ems="10"
                 android:hint="Product Description"
-                android:backgroundTint="@color/black"
+                android:background="@drawable/edittext_bg"
+                android:padding="5dp"
                 android:inputType="text"
                 android:minHeight="48dp"
                 android:layout_marginStart="20dp"
@@ -104,7 +109,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
-                android:backgroundTint="@color/black"
+                android:background="@drawable/edittext_bg"
+                android:padding="5dp"
                 android:ems="10"
                 android:hint="Product Price"
                 android:layout_marginStart="20dp"
@@ -128,7 +134,6 @@
                     android:id="@+id/textViewVaiation"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-
                     android:fontFamily="@font/open_sans_bold"
                     android:text="Product Variation"
                     android:textAlignment="center"
@@ -139,8 +144,10 @@
                     android:id="@+id/addVariationButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="60dp"
-                    android:text="Add"
+                    android:layout_marginStart="16dp"
+                    android:text="Add variation"
+                    android:textAlignment="center"
+                    android:background="@drawable/btn_bg"
                     app:layout_constraintBottom_toBottomOf="@+id/textViewVaiation"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.0"
@@ -183,6 +190,7 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginStart="40dp"
                     android:text="Add Image"
+                    android:background="@drawable/btn_bg"
                     />
             </LinearLayout>
             <Button
@@ -191,7 +199,7 @@
                 android:layout_height="55dp"
                 android:layout_marginTop="32dp"
                 android:layout_marginBottom="20dp"
-                android:background="@drawable/btn_bg_shape"
+                android:background="@drawable/btn_bg"
                 android:onClick="next"
                 android:padding="14sp"
                 android:text="ADD PRODUCT"

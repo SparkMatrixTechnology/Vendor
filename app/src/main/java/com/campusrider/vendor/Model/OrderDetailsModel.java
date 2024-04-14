@@ -1,8 +1,12 @@
 package com.campusrider.vendor.Model;
 
+import java.util.ArrayList;
+
 public class OrderDetailsModel {
-    int id,order_id,product_id,quantity,vendor_id,price;
-    String order_date,product_name;
+    int id, order_id, product_id, quantity, vendor_id, price;
+    String order_date, product_name;
+
+    ArrayList<VariationModel> variations;
 
     public OrderDetailsModel(int id, int order_id, int product_id, int quantity, int vendor_id, int price, String order_date, String product_name) {
         this.id = id;
@@ -14,6 +18,7 @@ public class OrderDetailsModel {
         this.order_date = order_date;
         this.product_name = product_name;
     }
+
 
     public int getId() {
         return id;
@@ -77,5 +82,13 @@ public class OrderDetailsModel {
 
     public void setProduct_name(String product_name) {
         this.product_name = product_name;
+    }
+
+    public ArrayList<VariationModel> getVariations() {
+        return variations;
+    }
+
+    public void setVariations(ArrayList<VariationModel> variations) {
+        this.variations = variations;
     }
 }

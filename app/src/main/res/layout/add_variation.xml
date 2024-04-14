@@ -3,13 +3,14 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:id="@+id/variation_card"
-    android:background="@color/white"
+    android:background="@drawable/edittext_bg"
     android:layout_marginBottom="10dp"
         >
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
+            android:padding="5dp"
             android:layout_marginBottom="6dp">
 
             <LinearLayout
@@ -55,8 +56,9 @@
                 android:id="@+id/descriptionlayout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="10dp"
                 android:orientation="vertical"
+                android:padding="10dp"
+                android:layout_gravity="center_vertical"
                 >
             </LinearLayout>
             <LinearLayout
@@ -67,16 +69,23 @@
                     android:id="@+id/add_more"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Add"
-                    android:layout_margin="6dp"
+                    android:text="Add Description"
+                    android:background="@drawable/btn_bg"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="6dp"
+                    android:layout_marginStart="20dp"
                     />
-                <Button
+                <ImageView
                     android:id="@+id/remove_card"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Remove"
-                    android:layout_margin="6dp"
-                    />
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:src="@drawable/baseline_highlight_off_24"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="6dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_gravity="center_vertical"
+                     />
+
             </LinearLayout>
 
 

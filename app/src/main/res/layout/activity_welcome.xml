@@ -55,7 +55,7 @@
         android:padding="14dp"
         android:text="Register"
         android:onClick="register"
-        android:background="@drawable/btn_bg_shape"
+        android:background="@drawable/btn_bg"
         android:textAllCaps="true"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"

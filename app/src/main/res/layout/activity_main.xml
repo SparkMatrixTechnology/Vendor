@@ -30,9 +30,10 @@
             android:fontFamily="@font/open_sans_bold"
             android:text="Logout"
             android:layout_gravity="bottom"
+            android:background="@drawable/btn_bg"
             android:textAllCaps="true"
             android:textStyle="bold"
-            android:padding="15dp"/>
+            android:layout_margin="15dp"/>
 
     </com.google.android.material.navigation.NavigationView>
 </androidx.drawerlayout.widget.DrawerLayout>

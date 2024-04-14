@@ -145,9 +145,10 @@ public class AddProductActivity extends AppCompatActivity {
                 }
                 try {
                     JSONObject jsonObject= new JSONObject(response);
-                    String result=jsonObject.getString("status");
+                    String result=jsonObject.getJSONObject("data").getString("status");
                     if (result.equals("success")) {
-                        String product_id=jsonObject.getString("product_id");
+                        String product_id=jsonObject.getJSONObject("data").getString("product_id");
+                        System.out.println("variation count"+ variationlayout.getChildCount()+"product_id"+ product_id);
                         addVariation(product_id);
                         Toast.makeText(AddProductActivity.this,"Added",Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(AddProductActivity.this, ProductListActivity.class);
@@ -180,6 +181,7 @@ public class AddProductActivity extends AppCompatActivity {
                 params.put("product_description",product_description);
                 params.put("product_price",product_price);
                 params.put("product_image",product_image);
+                params.put("total_variation", String.valueOf(variationlayout.getChildCount()));
 
                 return params;
             }
@@ -212,10 +214,10 @@ public class AddProductActivity extends AppCompatActivity {
                     else {
                         try {
                             JSONObject jsonObject= new JSONObject(response);
-                            String result=jsonObject.getString("status");
+                            String result=jsonObject.getJSONObject("data").getString("status");
                             if (result.equals("success")) {
-                                String variation_id=jsonObject.getString("variation_id");
-                                addVariationDetails(variation_id,variationView);
+                                String variation_id=jsonObject.getJSONObject("data").getString("variation_id");
+                                addVariationDetails(variation_id,variationView,productId);
                                 Toast.makeText(AddProductActivity.this,"Variation Added",Toast.LENGTH_SHORT).show();
                             }
                         } catch (JSONException e) {
@@ -247,7 +249,7 @@ public class AddProductActivity extends AppCompatActivity {
         }
     }
 
-    private void addVariationDetails(String variationId,View variationView) {
+    private void addVariationDetails(String variationId,View variationView,String product_id) {
         // Iterate through description layouts
         LinearLayout descriptionLayout = variationView.findViewById(R.id.descriptionlayout);
         // Iterate through all description items
@@ -256,8 +258,8 @@ public class AddProductActivity extends AppCompatActivity {
             EditText description = descriptionView.findViewById(R.id.vdescription);
             EditText price = descriptionView.findViewById(R.id.vprice);
             // Get description and price
-            String descriptionText = description.getText().toString();
-            String priceText = price.getText().toString();
+            String descriptionText = description.getText().toString().trim();
+            String priceText = price.getText().toString().trim();
             StringRequest request=new StringRequest(Request.Method.POST, Constants.POST_VARIATION_Details_URL, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
@@ -267,7 +269,7 @@ public class AddProductActivity extends AppCompatActivity {
                     else {
                         try {
                             JSONObject jsonObject= new JSONObject(response);
-                            String result=jsonObject.getString("status");
+                            String result=jsonObject.getJSONObject("data").getString("status");
                             if (result.equals("success")) {
                                 Toast.makeText(AddProductActivity.this,"Variation Details Added",Toast.LENGTH_SHORT).show();
                             }
@@ -288,8 +290,9 @@ public class AddProductActivity extends AppCompatActivity {
                 @Override
                 protected Map<String, String> getParams() throws AuthFailureError {
                     Map<String,String> params=new HashMap<String, String>();
+                    params.put("product_id",product_id);
                     params.put("variation_id",variationId);
-                    params.put("description",descriptionText );
+                    params.put("description",descriptionText);
                     params.put("price",priceText);
 
                     return params;
@@ -300,10 +303,11 @@ public class AddProductActivity extends AppCompatActivity {
         }
     }
 
-    private void addView() {
+    public void addView() {
         View variationview = getLayoutInflater().inflate(R.layout.add_variation, null, false);
         EditText editText = variationview.findViewById(R.id.variation_name);
-        Button addvariationdetails, removevariation;
+        Button addvariationdetails;
+        ImageView removevariation;
         CheckBox checkBox = variationview.findViewById(R.id.requiredCheckBox);
         LinearLayout descriptionlayout = variationview.findViewById(R.id.descriptionlayout);
         addvariationdetails = variationview.findViewById(R.id.add_more);
@@ -319,7 +323,7 @@ public class AddProductActivity extends AppCompatActivity {
 
         variationlayout.addView(variationview);
     }
-    private void addView1(LinearLayout descriptionlayout) {
+    public void addView1(LinearLayout descriptionlayout) {
         View detailsview = getLayoutInflater().inflate(R.layout.add_variation_description, null, false);
         EditText description = detailsview.findViewById(R.id.vdescription);
         EditText price = detailsview.findViewById(R.id.vprice);

@@ -27,6 +27,7 @@ public class SharedPrefManager {
         editor.putString("shop_category",user.getShop_category());
         editor.putString("area ",user.getArea());
         editor.putString("address",user.getAddress());
+        editor.putString("phone", user.getPhone());
         editor.putInt("delivery_time",user.getDelivery_time());
         editor.putString("vendor_token",user.getVendor_token());
         editor.putBoolean("logged",true);
@@ -47,6 +48,7 @@ public class SharedPrefManager {
                 sharedPreferences.getString("shop_category",null),
                 sharedPreferences.getString("area",null),
                 sharedPreferences.getString("address",null),
+                sharedPreferences.getString("phone",null),
                 sharedPreferences.getInt("delivery_time",-1),
                 sharedPreferences.getInt("vendor_status",-1),
                 sharedPreferences.getString("vendor_token",null)

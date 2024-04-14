@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.campusrider.vendor.Model.OrderDetailsModel;
@@ -17,6 +18,7 @@ import java.util.ArrayList;
 public class OrderDetailsAdapter extends RecyclerView.Adapter<OrderDetailsAdapter.ViewHolder> {
     Context context;
     ArrayList<OrderDetailsModel> list;
+    private  RecyclerView.RecycledViewPool viewPool=new RecyclerView.RecycledViewPool();
 
     public OrderDetailsAdapter(Context context, ArrayList<OrderDetailsModel> list) {
         this.context = context;
@@ -35,6 +37,12 @@ public class OrderDetailsAdapter extends RecyclerView.Adapter<OrderDetailsAdapte
         holder.binding.quantity.setText(""+order.getQuantity());
         holder.binding.itemName.setText(order.getProduct_name());
         holder.binding.cost.setText("Tk "+order.getPrice());
+        LinearLayoutManager layoutManager=new LinearLayoutManager(holder.binding.itemVariation.getContext(),LinearLayoutManager.HORIZONTAL,false);
+        layoutManager.setInitialPrefetchItemCount(order.getVariations().size());
+        VariationAdapter variationAdapter=new VariationAdapter(context,order.getVariations());
+        holder.binding.itemVariation.setLayoutManager(layoutManager);
+        holder.binding.itemVariation.setAdapter(variationAdapter);
+        holder.binding.itemVariation.setRecycledViewPool(viewPool);
     }
 
     @Override

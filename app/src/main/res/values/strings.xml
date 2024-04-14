@@ -20,5 +20,7 @@
     <string name="accepted_order">Accepted Order</string>
     <string name="pending_orders">Pending Orders</string>
     <string name="shop_name">Shop Name</string>
+    <string name="hour_minute">hour:minute</string>
+    <string name="remove">Remove</string>
 
 </resources>

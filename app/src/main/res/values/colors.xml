@@ -13,11 +13,14 @@
     <color name="gray">#393d40</color>
     <color name="darkGray">#27282c</color>
     <color name="mediumGray">#262523</color>
-    <color name="backgroundColor">#CFCACA</color>
+    <color name="backgroundColor">#FFFFFF</color>
     <color name="pending">#A65309</color>
     <color name="accepted">#0856F1</color>
     <color name="cancelled">#F50B0B</color>
     <color name="picked">#0A592D</color>
     <color name="delivered">#05FF05</color>
     <color name="red">#800A0A</color>
+    <color name="search_bg">#D9DCD9</color>
+    <color name="btn_bg">#873D97</color>
+    <color name="colorPrimary">#CAA4FA</color>
 </resources>

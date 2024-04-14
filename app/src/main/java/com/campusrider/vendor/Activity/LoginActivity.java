@@ -25,6 +25,7 @@ import com.campusrider.vendor.R;
 import com.campusrider.vendor.databinding.ActivityLoginBinding;
 import com.campusrider.vendor.session.SharedPrefManager;
 import com.campusrider.vendor.utils.Constants;
+import com.hbb20.CountryCodePicker;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -36,13 +37,14 @@ import java.util.Map;
 public class LoginActivity extends AppCompatActivity {
 
     Button login;
-    EditText shop_name,shop_pass;
+    EditText ePhone,shop_pass;
     int vendor_id;
-    String vendor_name,vendor_password,shop_image,shop_category,area,address,vendor_token;
+    String vendor_name,vendor_password,shop_image,shop_category,area,address,vendor_token,phone;
     int delivery_time,vendor_status;
     String strname,strpassword;
     String url= Constants.LOGIN_URL;
     SharedPrefManager sharedPrefManager;
+    CountryCodePicker countryCodePicker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,25 +52,28 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         sharedPrefManager=new SharedPrefManager(getApplicationContext());
          login=findViewById(R.id.login_button);
-        shop_name=findViewById(R.id.shop_name);
+        ePhone=findViewById(R.id.phone_edit);
         shop_pass=findViewById(R.id.password_edit);
-
+        countryCodePicker=findViewById(R.id.countryCodePicker);
+        countryCodePicker.registerCarrierNumberEditText(ePhone);
 
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 LoginResponse loginResponse=null;
 
-                if(shop_name.getText().toString().isEmpty()){
-                    shop_name.setError("Field can't be empty");
+                if(ePhone.getText().toString().isEmpty()){
+                    ePhone.setError("Field can't be empty");
                     return;
                 }
                 if(shop_pass.getText().toString().isEmpty()){
                     shop_pass.setError("Field can't be empty");
                     return;
+                }if(!countryCodePicker.isValidFullNumber()){
+                    ePhone.setError("Enter Valid Phone number");
+                    return;
                 }
                 else {
-                    strname=shop_name.getText().toString().trim();
                     strpassword=shop_pass.getText().toString().trim();
                     RequestQueue requestQueue= Volley.newRequestQueue(LoginActivity.this);
                     StringRequest request=new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
@@ -93,9 +98,10 @@ public class LoginActivity extends AppCompatActivity {
                                         shop_category = users.getString("shop_category");
                                         area = users.getString("area");
                                         address = users.getString("address");
+                                        phone=users.getString("vendor_phone");
                                         delivery_time = users.getInt("delivery_time");
                                         vendor_status = users.getInt("vendor_status");
-                                        sharedPrefManager.saveUser(new User(vendor_id, vendor_name,vendor_password,shop_image,shop_category,area,address,delivery_time,vendor_status,vendor_token));
+                                        sharedPrefManager.saveUser(new User(vendor_id, vendor_name,vendor_password,shop_image,shop_category,area,address,phone,delivery_time,vendor_status,vendor_token));
                                         Toast.makeText(LoginActivity.this, "Login Successful", Toast.LENGTH_SHORT).show();
 
                                         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
@@ -128,7 +134,7 @@ public class LoginActivity extends AppCompatActivity {
                         @Override
                         protected Map<String, String> getParams() throws AuthFailureError {
                             Map<String,String> params=new HashMap<String, String>();
-                            params.put("vendor_name",strname);
+                            params.put("vendor_phone",countryCodePicker.getFullNumberWithPlus());
                             params.put("vendor_password",strpassword);
 
                             return params;

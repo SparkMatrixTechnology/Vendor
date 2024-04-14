@@ -66,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
     TextView profile_name;
     int vendor_id;
     String token;
-    String vendor_name,vendor_password,shop_image,shop_category,area,address,vendor_token;
+    String vendor_name,vendor_password,shop_image,shop_category,area,address,vendor_token,phone;
     int delivery_time,vendor_status;
 
     @Override
@@ -170,10 +170,11 @@ public class MainActivity extends AppCompatActivity {
                             shop_category = users.getString("shop_category");
                             area = users.getString("area");
                             address = users.getString("address");
+                            phone=users.getString("vendor_phone");
                             delivery_time = users.getInt("delivery_time");
                             vendor_status = users.getInt("vendor_status");
                             vendor_token=users.getString("vendor_token");
-                            sharedPrefManager.saveUser(new User(vendor_id, vendor_name,vendor_password,shop_image,shop_category,area,address,delivery_time,vendor_status,vendor_token));
+                            sharedPrefManager.saveUser(new User(vendor_id, vendor_name,vendor_password,shop_image,shop_category,area,address,phone,delivery_time,vendor_status,vendor_token));
                         }
                     }
 

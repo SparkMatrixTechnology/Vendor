@@ -28,6 +28,7 @@ import com.campusrider.vendor.MainActivity;
 import com.campusrider.vendor.Model.FirebaseMessegingService;
 import com.campusrider.vendor.Model.Messeging;
 import com.campusrider.vendor.Model.OrderDetailsModel;
+import com.campusrider.vendor.Model.VariationModel;
 import com.campusrider.vendor.R;
 import com.campusrider.vendor.session.SharedPrefManager;
 import com.campusrider.vendor.utils.Constants;
@@ -165,6 +166,7 @@ public class OrderDetailsActivity extends AppCompatActivity {
                         for(int i=0;i<order_array.length();i++){
                             JSONObject object=order_array.getJSONObject(i);
                             String order_status=object.getString("order_status");
+                            int size=object.getInt("total_variation");
                             OrderDetailsModel orderDetail=new OrderDetailsModel(
                                     object.getInt("id"),
                                     object.getInt("order_id"),
@@ -175,6 +177,20 @@ public class OrderDetailsActivity extends AppCompatActivity {
                                     object.getString("order_date"),
                                     object.getString("product_name")
                             );
+                            JSONArray variation_array = mainObj.getJSONArray("Variation");
+                            ArrayList<VariationModel> variationModelArrayList = new ArrayList<>();
+                            for (int j = 0; j < variation_array.length(); j++) {
+                                JSONObject object1 = variation_array.getJSONObject(j);
+                                if(object.getInt("order_id")==object1.getInt("order_id") && object.getInt("product_id")==object1.getInt("product_id")) {
+                                    Log.e("catres1", response);
+                                    variationModelArrayList.add(new VariationModel(
+                                            object1.getString("variation_name")
+                                    ));
+
+                                }
+
+                            }
+                            orderDetail.setVariations(variationModelArrayList);
                             orderDetailsModels.add(orderDetail);
                             if(order_status.equals("Placed")){
                                 acceptbtn.setVisibility(View.VISIBLE);

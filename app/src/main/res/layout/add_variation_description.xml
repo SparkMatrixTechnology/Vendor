@@ -3,13 +3,18 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="10dp"
+    android:textAlignment="center"
+    android:background="@drawable/edittext_bg"
     android:orientation="horizontal">
     <EditText
         android:id="@+id/vdescription"
-        android:layout_width="180dp"
+        android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:hint="Description"
-       android:layout_margin="8dp"
+        android:inputType="text"
+        android:backgroundTint="@color/black"
+        android:textColor="@color/black"
+        android:layout_margin="8dp"
         android:textColorHint="@color/black" />
     <TextView
         android:layout_width="wrap_content"
@@ -25,18 +30,21 @@
 
     <EditText
         android:id="@+id/vprice"
-        android:layout_width="89dp"
+        android:layout_width="75dp"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
         android:hint="Price"
+        android:inputType="number"
+        android:backgroundTint="@color/black"
+        android:textColor="@color/black"
         android:textColorHint="@color/black" />
     <ImageView
         android:id="@+id/remove_description"
-        android:layout_width="25dp"
-        android:layout_height="25dp"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
         android:layout_marginTop="15dp"
         android:layout_marginBottom="5dp"
-        android:src="@drawable/baseline_close_24"
+        android:src="@drawable/baseline_highlight_off_24"
         android:layout_marginEnd="5dp"
         android:layout_marginStart="8dp"
         />
